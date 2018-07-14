@@ -46,12 +46,12 @@ while true ; do
                 "") shift 2 ;;
                 *) select=$2 ; shift 2 ;;
             esac ;;
-        -d|--ext) # rows to select in obsID list, e.g. 1 or 1-10 (required argument)
+        -d|--ext) 
             case "$2" in
                 "") shift 2 ;;
                 *) ext=$2 ; shift 2 ;;
             esac ;;
-        -e|--input_dir) # rows to select in obsID list, e.g. 1 or 1-10 (required argument)
+        -e|--input_dir)
             case "$2" in
                 "") shift 2 ;;
                 *) input_dir=$2 ; shift 2 ;;
