@@ -82,7 +82,7 @@ if __name__ == "__main__":
     args = ps.parse_args()
 
     if args.outname is None:
-        outname = arg.obslist.split(".")[0]+"_manta.csv"
+        outname = args.obslist.split(".")[0]+"_manta.csv"
     else:
         outname = args.outname
 
