@@ -148,5 +148,3 @@ end_time=`date +%s`
 duration=`echo "$end_time-$start_time" | bc -l`
 echo "Total runtime = $duration sec"
 
-# Move output and error files to output directory
-mv $MYDATA/copyselect.o${SLURM_JOB_ID} $MYDATA/copyselect.e${SLURM_JOB_ID} .
