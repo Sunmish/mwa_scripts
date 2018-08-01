@@ -17,10 +17,15 @@ def main(obsid_list, selection, timeres, freqres, outname):
         obslines = f1.readlines()
         with open(outname, "w+") as f2:
             for i, line in enumerate(obslines):
-                if i+1 in selection:
+                
+                if selection == "all":
                     
                     obs = line.split()[0]
-
+                    f2.write(line_formatter(obs, timeres, freqres))
+                
+                elif i+1 in selection:
+                    
+                    obs = line.split()[0]
                     f2.write(line_formatter(obs, timeres, freqres))
 
 
