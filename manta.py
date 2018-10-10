@@ -1,10 +1,13 @@
+#! /usr/bin/env python
+
 # A scripts to convert a list of observation IDs to a format suitable
 # to submit to the MWA manta-ray client, mwa_client, for converting
 # snapshots to MeasurementSet format.
 # ---------------------------------------------------------------------------- #
 
+import argparse
 
-def main(obsid_list, selection, timeres, freqres, outname):
+def make_file(obsid_list, selection, timeres, freqres, outname):
     """Prepare manta-ray file.
 
     e.g.
@@ -29,8 +32,7 @@ def main(obsid_list, selection, timeres, freqres, outname):
                     f2.write(line_formatter(obs, timeres, freqres))
 
 
-
-
+                    
 def line_formatter(obsid, timeres, freqres, ending="\n"):
     """Create line for manta-ray file."""
 
@@ -39,8 +41,6 @@ def line_formatter(obsid, timeres, freqres, ending="\n"):
            obsid, timeres, int(freqres), ending)
 
     return line
-
-
 
 
 def convert_selection(selection):
@@ -64,11 +64,10 @@ def convert_selection(selection):
     return all_bits
 
 
+def main():
+    """The main function."""
+    
 
-
-if __name__ == "__main__":
-
-    import argparse
     ps = argparse.ArgumentParser(description="Convert a list of observation IDs"
                                              " to a manta-ray-client compatible" 
                                              " csv file with appropriate options")
@@ -96,8 +95,12 @@ if __name__ == "__main__":
     else:
         selection = convert_selection(args.selection)
 
+    make_file(args.obslist, selection, args.timeres, args.freqres, outname)
 
-    main(args.obslist, selection, args.timeres, args.freqres, outname)
+
+if __name__ == "__main__":
+    main()
+
 
 
 
