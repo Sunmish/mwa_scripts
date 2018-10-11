@@ -19,11 +19,11 @@ def main():
     ps.add_argument("-c", "--cmap", type=str, default="viridis")
     ps.add_argument("-s", "--show", action="store_true")
 
+    args = ps.parse_args()
+    
     if not args.show:
         matplotlib.use("Agg")
-
-    args = ps.parse_args()
-
+    
     if not args.image.endswith(".fits"):
         args.image += ".fits" 
 
