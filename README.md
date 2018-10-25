@@ -2,7 +2,7 @@
 A collection of scripts for MWA data processing.
 
 #### dd_hms_dd.py
-Convert from decimal degree coordinates to a string format (e.g. hh:mm:ss.s, dd:mm:ss.s). Mostly for use in bash scripts - specifically for sftware such as `chgcentre` which requires the string format.
+Convert from decimal degree coordinates to a string format (e.g. hh:mm:ss.s, dd:mm:ss.s). Mostly for use in bash scripts - specifically for software such as `chgcentre` which requires the string format.
 ```
 usage: dd_hms_dms.py RA DEC
 ```
