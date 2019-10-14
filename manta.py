@@ -5,14 +5,12 @@
 # snapshots to MeasurementSet format.
 # ---------------------------------------------------------------------------- #
 
-import argparse
 
-def make_file(obsid_list, selection, timeres, freqres, outname):
+def main(obsid_list, selection, timeres, freqres, outname):
     """Prepare manta-ray file.
 
     e.g.
-    obs_id=1151161304, job_type=c, timeres=10, freqres=80, edgewidth=80, \
-    	conversion=ms, allowmissing=true, flagdcchannels=true
+    obs_id=1151161304, job_type=c, timeres=10, freqres=80, edgewidth=80, conversion=ms, allowmissing=true, flagdcchannels=true
     """
 
 
@@ -20,19 +18,15 @@ def make_file(obsid_list, selection, timeres, freqres, outname):
         obslines = f1.readlines()
         with open(outname, "w+") as f2:
             for i, line in enumerate(obslines):
-                
-                if selection == "all":
+                if i+1 in selection and "#" not in line:
                     
                     obs = line.split()[0]
-                    f2.write(line_formatter(obs, timeres, freqres))
-                
-                elif i+1 in selection:
-                    
-                    obs = line.split()[0]
+
                     f2.write(line_formatter(obs, timeres, freqres))
 
 
-                    
+
+
 def line_formatter(obsid, timeres, freqres, ending="\n"):
     """Create line for manta-ray file."""
 
@@ -41,6 +35,8 @@ def line_formatter(obsid, timeres, freqres, ending="\n"):
            obsid, timeres, int(freqres), ending)
 
     return line
+
+
 
 
 def convert_selection(selection):
@@ -64,10 +60,11 @@ def convert_selection(selection):
     return all_bits
 
 
-def main():
-    """The main function."""
-    
 
+
+if __name__ == "__main__":
+
+    import argparse
     ps = argparse.ArgumentParser(description="Convert a list of observation IDs"
                                              " to a manta-ray-client compatible" 
                                              " csv file with appropriate options")
@@ -95,12 +92,8 @@ def main():
     else:
         selection = convert_selection(args.selection)
 
-    make_file(args.obslist, selection, args.timeres, args.freqres, outname)
 
-
-if __name__ == "__main__":
-    main()
-
+    main(args.obslist, selection, args.timeres, args.freqres, outname)
 
 
 
