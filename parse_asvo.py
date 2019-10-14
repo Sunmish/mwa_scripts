@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function, division
+
 import numpy as np
 from argparse import ArgumentParser
 from astropy.io.votable import parse_single_table
@@ -16,13 +18,37 @@ def open_xml(xml):
 def get_obs(table, source, chan):
     """Get a list of observation IDs for `source` at `chan`."""
 
-    obsids = []
+    obsids, fov, ra, dec = [], [], [], []
     for i in range(len(table["obs_title"])):
-        if table["obs_title"][i].split("_")[-1] == str(chan) and \
-            table["obs_title"][i].split("_")[0] == source:
-            obsids.append(table["obs_id"][i])
 
-    return obsids
+        name = "_".join(table["obs_title"][i].split("_")[:-1])
+        channel = table["obs_title"][i].split("_")[-1]
+
+        if channel == str(chan) and \
+            name == source:
+            obsids.append(table["obs_id"][i])
+            fov.append(table["s_fov"][i])
+            ra.append(table["s_ra"][i])
+            dec.append(table["s_dec"][i])
+
+
+    return obsids, fov, ra, dec
+
+
+
+def region_formatter(name, fov, ra, dec, color="green"):
+    """Create a region file."""
+
+    with open(name, "w+") as f:
+        f.write("# Region file format: DS9 version 4.1\n")
+        f.write("global color={} dashlist=8 3 width=1 font=\"helvetica 10 "
+                "normal roman\" select=1 highlite=1 dash=0 fixed=0 edit=1 "
+                "move=1 delete=1 include=1 source=1\n".format(color))
+        f.write("fk5\n")
+
+        for i in range(len(fov)):
+            f.write("circle({}d,{}d,{}d)\n".format(ra[i], dec[i], float(fov[i])/2.))
+
 
 
 def main():
@@ -43,6 +69,12 @@ def main():
     ps.add_argument("-o", "--outname", type=str, default=None, 
                     help="Output file name. By default, the output file name "
                          "is determined from the source name and channel.")
+    ps.add_argument("-f", "--footprint", action="store_true", 
+                    help="Switch to create a DS9 region file showing the "
+                         "footprint of each observation.")
+    ps.add_argument("-C", "--color", "--colour", dest="color", default="green",
+                    help="Color for the footprint region file.")
+
 
     args = ps.parse_args()
     table = open_xml(args.table)
@@ -55,13 +87,17 @@ def main():
             else:
                 outname = args.outname
 
-            obsids = get_obs(table=table,
-                             source=source,
-                             chan=chan)
+            obsids, fov, ra, dec = get_obs(table=table,
+                                   source=source,
+                                   chan=chan)
 
             with open(outname, "w+") as f:
                 for obs in obsids:
                     f.write("{}\n".format(obs))
+
+            if args.footprint:
+                r_outname = outname.replace(".txt", ".reg")
+                region_formatter(r_outname, fov, ra, dec, args.color)
 
 
 if __name__ == "__main__":
