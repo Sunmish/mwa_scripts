@@ -365,6 +365,8 @@ def main():
                     help="Switch to return only the mainlobe.")
     ps.add_argument("-P", "--peak", action="store_false", dest="centroid",
                     help="Find peak of lobes rather than centroids. [Default False]")
+    ps.add_argument("-o", "--outname", default=None, type=str,
+                    help="Specify an output name if wanting a beam image as well.")
 
     args = ps.parse_args()
 
@@ -376,7 +378,8 @@ def main():
         t, delays, freq, pnt = parse_metafits(args.image)
         hdu = make_beam_image(t, delays, freq, 
                               ra=pnt.ra.value,
-                              return_hdu=True)
+                              return_hdu=True,
+                              outname=args.outname)
 
     else:
 
